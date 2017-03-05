@@ -1,6 +1,8 @@
 # wave-visualiser
 A simple 2d wave visualiser in javascript
 
+You can check it out in action at http://nblackburn.ca/wave-visualiser/.
+
 This little web application was programmed in 2012 and it allows you to explore and visualise 2d waves. The inspector and properties panels allow you to create or delete waves and change their properties in real time. The play button in the upper left corner of the screen animate the waves.
 
 It has been programmed using javascript, jquery, processing.js and HTML5 canvas, Bootstrap and some custom CSS for the interface appearance. I think it also used those icon libraries but I am not sure to what extent: Silk icons and Glyph icons.
