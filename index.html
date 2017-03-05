@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wave visualiser by Nicolas Blackburn</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/normalize.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="sprites/silk/silk.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/custom-bootstrap.css" media="all" />
+        <link href="vendor/jquery-ui/css/smoothness/jquery-ui-1.8.18.custom.css" rel="stylesheet" type="text/css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" media="all" />
+        <script src="vendor/jquery/jquery-1.8.2.min.js" type="text/javascript"></script>
+        <script src="vendor/jquery-ui/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+        <script src="vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="vendor/processing/processing-1.4.1-api.min.js" type="text/javascript"></script>
+        <script src="js/script.js" type="text/javascript"></script>
+        <script src="js/application.js" type="text/javascript"></script>
+        <script src="js/inspectorform.js" type="text/javascript"></script>
+        <script src="js/propertiesform.js" type="text/javascript"></script>
+        <script src="js/documentcanvas.js" type="text/javascript"></script>
+        <script src="js/toolbar.js" type="text/javascript"></script>
+        <script src="js/document.js" type="text/javascript"></script>
+        <script src="js/wave.js" type="text/javascript"></script>
+        <script type="text/javascript">
+jQuery(function ( $ ) {
+    var application, wave;
+    window.application = application = blab.Application({
+        canvas: "#document_canvas"
+    });
+    wave = blab.Wave();
+    wave.id = "wave_A";
+    wave.centerX = 60;
+    wave.centerY = 160;
+    wave.frequency = 32;
+    wave.speed = 2;
+    application.document.addElement(wave);
+    wave = blab.Wave();
+    wave.id = "wave_B";
+    wave.frequency = 32;
+    wave.speed = 2;
+    wave.centerX = 260;
+    wave.centerY = 160;
+    application.document.addElement(wave);
+    application.document.fireDocumentChange({
+        source: null
+    });
+});
+        </script>
+    </head>
+    <body>
+        <div id="application_header">   
+            <span>
+                <a class="brand" href="/">Wave visualiser<small> by Nicolas Blackburn</small></a>
+                
+            </span>
+            <!--
+            <nav>
+                <a href="">Profile</a> |
+                <a href="">Logout</a>
+            </nav>
+            -->
+        </div>
+        <div id="toolbar">
+            <!--
+            <button id="btn_new" type="button" title="New"><span class="icon-silk-page-white-add"></span></button>
+            <button id="btn_open" type="button" title="Open"><span class="icon-silk-folder"></span></button>
+            <button id="btn_save" type="button" title="Save"><span class="icon-silk-disk"></span></button>
+            <button id="btn_rename" type="button" title="Rename"><span class="icon-silk-page-white-edit"></span></button>
+            -->
+            <button id="btn_play" type="button" title="Play"><span class="icon-white icon-bootstrap-play"></span></button>
+            <button id="btn_info" type="button" title="Information"><span class="icon-silk-information"></span></button>
+        </div>
+        
+        <div id="application_body">
+            <div id="center_panel"> 
+                <div class="widget-header">
+                    <div class="label-group">
+                        Editor
+                    </div>
+                </div>
+                <div class="document-panel">
+                    <canvas id="document_canvas" />
+                </div>
+            </div>
+            
+            <div id="sidebar">
+                
+                    <div class="widget">
+                        <div class="widget-header" id="properties_header">Properties</div>
+                        <form action="#" class="widget-body" id="properties_panel" method="get">
+                            <div class="control-group">
+                                <label for="txt_id">Id</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_id" name="txt_id" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_center_x">Center X</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_center_x" name="txt_center_x" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_center_y">Center Y</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_center_y" name="txt_center_y" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_frequency">Frequency</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_frequency" name="txt_frequency" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_phase">Phase</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_phase" name="txt_phase" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_speed">Speed</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_speed" name="txt_speed" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="chk_visible">Visible</label>
+                                <div class="controls">
+                                    <input id="chk_visible" name="chk_visible" type="checkbox" disabled="disabled" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-header" id="inspector_header">Inspector</div>
+                        <div class="widget-body" id="inspector_panel">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <select id="scene_objects" multiple="multiple" name="scene_objects">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <button class="btn" id="btn_add_object" type="button"><span class="icon-bootstrap-plus-sign"></span></button>
+                                    <button class="btn" id="btn_remove_object" type="button"><span class="icon-bootstrap-trash"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        
+        <div class="modal hide fade" id="info-dialog">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>Information</h3>
+            </div>
+            <div class="modal-body form-horizontal">
+                <p>This little web application was programmed in 2012 and it allows you to explore and visualise 2d waves. The inspector and properties panels allow you to create or delete waves and change their properties in real time. The play button in the upper left corner of the screen animate the waves.</p>
+                
+                <p>It has been programmed using javascript, <a href="https://jquery.com/">jquery</a>, <a href="http://processingjs.org/">processing.js</a> and HTML5 canvas, <a href="http://getbootstrap.com/">Bootstrap</a> and some custom CSS for the interface appearance. I think it also used those icon libraries but I am not sure to what extent <a href="http://www.famfamfam.com/lab/icons/silk/">Silk icons</a> and <a href="http://glyphicons.com/">Glyph icons</a>.</p>
+                
+                <p>When looking back at the source code, I think I had a wider goal of creating some kind of generic web app skeleton, but I must have lost the interest after toying with it a bit. Still I like the look of it, and wave functions are cool!</p>
+                
+                <p>This code is under <a href="https://creativecommons.org/licenses/by/4.0/legalcode">Creative Common Licence</a> and you are free to use it wholy or in part and do whatever pleases you with it.</p>
+                
+                <p>Have fun,</p>
+                
+                <p>Nicolas B.</p>
+                
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-primary" href="#">Fermer</a>
+            </div>
+        </div>
+        
+        <div id="save-file-dialog">
+        </div>
+        
+        <script type="text/javascript">
+(function ( $ ) {
+    $(function (  ) {
+        $("#btn_info").click(function() {
+            $("#info-dialog").modal('show');
+        });
+        
+        $("#info-dialog .btn-primary").click(function() {
+            $("#info-dialog").modal('hide');
+        });
+        
+        //$("#save-file-dialog").saveFileDialog();
+    });
+})(jQuery);
+        </script>
+            
+        <!--
+        <div class="dialog" id="dialog1">
+            <div class="dialog-header">
+                <div class="label-group">
+                    <span class="label">Boîte de dialogue</span>
+                </div>
+                <div class="button-group">
+                    <button type="button" title="Fermer"><span class="icon icon-bootstrap icon-remove-sign"></span></button>
+                </div> 
+            </div>
+            <div class="dialog-body">
+                Ceci est une boîte de dialogue.
+            </div>
+        </div>
+        -->
+        <!--
+                <table id="application_layout">
+            <tr id="application_topbar">
+                <td colspan="3">                    
+                    <a class="brand pull-left" href="/">Blab! <small>The Web Lab</small></a>
+                    
+                    <nav class="pull-right">
+                        <a href="">Account</a> |
+                        <a href="">Logout</a> |
+                        <a href="">Help</a>
+                    </nav>
+                </td>
+            </tr>
+            <tr id="application_center_row">
+                <td id="application_sidebar">
+                    <div class="widget-header">&nbsp;</div>
+                </td>
+                <td id="application_documents">
+                    <div class="tab-list" id="application_tabs">
+                        <a class="tab" href="">
+                            <i class="tab-icon icon-trash"></i>
+                            <span class="tab-title">New Tab 1</span>
+                            <span class="tab-buttons">
+                                <button type="button"></button>
+                            </span>
+                        </a>
+                        <a class="tab" href="#" id="application_tab_new">
+                            <i class="tab-icon icon-plus-sign"></i>
+                        </a>
+                    </div>
+                    <div class="tab-content" id="application_tab_panes">
+                    </div>
+                </td>
+                
+                <td id="application_sidebar_secondary">
+                    <div class="widget">
+                        <div class="widget-header" id="properties_header">Properties</div>
+                        <form action="#" class="widget-body" id="properties_panel" method="get">
+                            <div class="control-group">
+                                <label for="txt_id">Id</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_id" name="txt_id" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_center_x">Center X</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_center_x" name="txt_center_x" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_center_y">Center Y</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_center_y" name="txt_center_y" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_frequency">Frequency</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_frequency" name="txt_frequency" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_phase">Phase</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_phase" name="txt_phase" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="txt_speed">Speed</label>
+                                <div class="controls">
+                                    <input disabled="disabled" id="txt_speed" name="txt_speed" type="text" value="" />
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label for="chk_visible">Visible</label>
+                                <div class="controls">
+                                    <input id="chk_visible" name="chk_visible" type="checkbox" disabled="disabled" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-header" id="elements_header">Elements</div>
+                        <div class="widget-body" id="elements_panel">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <select id="scene_objects" multiple="multiple" name="scene_objects">
+                                    </select>
+                                    <button class="btn" id="btn_add_object" type="button"><i class="icon-plus-sign"></i></button>
+                                    <button class="btn" id="btn_remove_object" type="button"><i class="icon-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+                    
+            <tr>
+                <td colspan="3" id="application_footer">
+                    <div class="toolbar" id="application_toolbar">
+                        <button class="btn" id="btn_play" type="button"><i class="icon-play"></i></button>
+                    </div>
+                    <div class="copyright">2012 &copy; Nicolas Blackburn</div>
+                </td>
+            </tr>
+        </table> 
+         -->
+    </body>
+</html>
